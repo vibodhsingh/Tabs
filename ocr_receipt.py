@@ -1,5 +1,5 @@
 import cv2
-import pytesseract
+import easyocr
 
 image_path = "receipt.jpg"
 
@@ -11,10 +11,12 @@ if image is None:
     exit(1)
 
 # Convert to grayscale
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 
-text = pytesseract.image_to_string(gray)
+reader = easyocr.Reader(['en'], gpu=True)
+results = reader.readtext(image)
 
 print("=== OCR Output ===")
-print(text.strip())
+for (bbox, text, prob) in results:
+    print(f"Text: {text} (Confidence: {prob:.2f})")
